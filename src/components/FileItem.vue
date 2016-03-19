@@ -1,9 +1,11 @@
 <template>
-<table class="file-list table table-hover">
+<table class="file-list table table-hover" id="fileList">
   <tbody>
-    <tr :class="{'muted': item.isMuted}" v-for="item in items">
+    <tr :class="{
+      'muted': !item.isMuted
+    }" v-for="item in items">
         <td class="file">
-            <a :href="{{item.url}}" class="icon" target="_blank" class="icon {{item.type}}">{{item.text}}</a>
+            <a href="{{item.name}}" target="_blank" class="icon {{item.type}}">{{item.name}}</a>
         </td>
 
         <td class="op">
@@ -28,17 +30,47 @@
   export default {
     props: ['items'],
     data () {
-      return {
-      }
+      return {}
     },
     methods: {
       showQRCode: function (i) {},
       unmute: function (i) {
-        this.items[i].isMuted = true
+        this.items[i].isMuted = false
       },
       mute: function (i) {
-        this.items[i].isMuted = false
+        this.items[i].isMuted = true
+        console.log(this.items[i])
+      }
+    },
+    events: {
+      fileList: function (d) {
+        console.log(d)
+        this.items = d
       }
     }
   }
 </script>
+<style lang="scss">
+  #fileList tr{
+    .op-group{
+      display: none;
+    }
+    &:hover .op-group{
+      display: inline-block;
+    }
+  }
+  #fileList .op{
+    width: 70px;
+    text-align: right;
+    a{
+      text-decoration: none;
+    }
+    a.mute{
+      color: #D9534F;
+    }
+    a.unmute{
+      color: #5CB85C;
+      display: none;
+    }
+  }
+</style>

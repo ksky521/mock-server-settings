@@ -12,7 +12,7 @@
                   </span>
               </div>
 
-              <folder-item :items=folders :active-index=activeFolder></folder-item>
+              <folder-item :items=folders :active-index=activeFolderIndex></folder-item>
           </div>
 
           <div class="project-box col-sm-7">
@@ -105,16 +105,11 @@
       tabs,
       tab
     },
-    props: {
-      folders: Array,
-      activeFolder: {
-        type: Number,
-        default: 0
-      },
-      activeFiles: Array
-    },
     data () {
       return {
+        folders: [],
+        activeFolder: '',
+        activeFolderIndex: 0,
         newFolder: '',
         refreshDelay: 0,
         compileLess: false
@@ -124,15 +119,26 @@
       addFolder: function () {
         var f = this.newFolder.trim()
         if (f && this.folders.indexOf(f) === -1) {
-          this.addFolderArray(f)
+          this.$dispatch('sendAddFolder', {
+            folder: f
+          })
         }
       },
       addFolderArray: function (f) {
+        console.log(f)
         this.folders.unshift(f)
         this.newFolder = ''
       }
     },
     events: {
+      receiveFolder: function (f) {
+        this.addFolderArray(f)
+      },
+      initFolderList: function (d) {
+        this.folders = d.folderList
+        this.activeFolder = d.curFolder
+        this.activeFolderIndex = this.folders.indexOf(d.curFolder)
+      }
     }
   }
 </script>

@@ -6,6 +6,12 @@ module.exports = {
   plugins: [
     'html'
   ],
+  "env": {
+    "browser": false
+  },
+  globals: {
+    'alert': true
+  },
   // add your custom rules here
   'rules': {
     // allow paren-less arrow functions

@@ -18,17 +18,22 @@ export default {
     }
   },
   data () {
-    return {
-      // items: ['1212121']
-    }
+    return {}
   },
   methods: {
     remove: function (i, f, evt) {
-      this.items.splice(i, 1)
+      var folder = this.items.splice(i, 1)
       evt.stopPropagation()
+      this.$dispatch('delFolder', {
+        folder: folder[0]
+      })
     },
     active: function (i, f) {
       this.activeIndex = i
+      var activeFolder = this.items[this.activeIndex]
+      this.$dispatch('changeFolder', {
+        folder: activeFolder
+      })
     }
   }
 }
