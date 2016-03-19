@@ -22,7 +22,7 @@
                     <li><a href="javascript:" data-bind="text:path, click: goRoot"></a></li>
                     <li><a href="javascript:" data-bind="text: name, click: onClick"></a></li>
                 </ul>
-                <file-item :items=activeFiles></file-item>
+                <file-item></file-item>
 
               </tab>
               <tab header="设置">
@@ -125,7 +125,6 @@
         }
       },
       addFolderArray: function (f) {
-        console.log(f)
         this.folders.unshift(f)
         this.newFolder = ''
       }

@@ -2,7 +2,7 @@
 <table class="file-list table table-hover" id="fileList">
   <tbody>
     <tr :class="{
-      'muted': !item.isMuted
+      'muted': isMuted($index)
     }" v-for="item in items">
         <td class="file">
             <a href="{{item.name}}" target="_blank" class="icon {{item.type}}">{{item.name}}</a>
@@ -14,10 +14,10 @@
                    data-toggle="tooltip" title="URL+二维码" @click="showQRCode($index, item)">
                 </a>
                 <a href="javascript:" class="mute glyphicon glyphicon-ban-circle"
-                   data-toggle="tooltip" title="不监听更新" @click="mute($index, item)">
+                   data-toggle="tooltip" title="不监听更新" @click="mute($index, item)" :show="item.isMuted">
                 </a>
                 <a href="javascript:" class="unmute glyphicon glyphicon-ok-circle"
-                   data-toggle="tooltip" title="监听更新" @click="unmute($index, item)">
+                   data-toggle="tooltip" title="监听更新" @click="unmute($index, item)" :show="!item.isMuted">
                 </a>
             </div>
         </td>
@@ -28,9 +28,10 @@
 
 <script>
   export default {
-    props: ['items'],
     data () {
-      return {}
+      return {
+        items: []
+      }
     },
     methods: {
       showQRCode: function (i) {},
@@ -39,7 +40,9 @@
       },
       mute: function (i) {
         this.items[i].isMuted = true
-        console.log(this.items[i])
+      },
+      isMuted: function (i) {
+        return !!this.items[i].isMuted
       }
     },
     events: {
@@ -57,6 +60,9 @@
     }
     &:hover .op-group{
       display: inline-block;
+    }
+    &.muted .file a{
+      opacity: 0.3;
     }
   }
   #fileList .op{

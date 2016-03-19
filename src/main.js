@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import App from './App'
+Vue.config.debug = true
 const DEBUG_LEVEL = 5
 var debug = function (msg, level) {
   level = level || 5
@@ -15,7 +16,6 @@ var socket = window.io(ioUrl)
 var vm = new Vue({
   el: 'body',
   data: {
-    socket: socket
   },
   components: {
     App
