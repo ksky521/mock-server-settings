@@ -1,22 +1,13 @@
 import Vue from 'vue'
 import App from './App'
 Vue.config.debug = true
-const DEBUG_LEVEL = 5
-var debug = function (msg, level) {
-  level = level || 5
-  if (level >= DEBUG_LEVEL) {
-    console.log(msg)
-  }
-}
-
 /* eslint-disable no-new */
 
 var ioUrl = 'http://' + window.location.hostname + ':8800'
 var socket = window.io(ioUrl)
 var vm = new Vue({
   el: 'body',
-  data: {
-  },
+  data: {},
   components: {
     App
   },
@@ -29,16 +20,22 @@ var vm = new Vue({
     },
     delFolder: function (d) {
       socket.emit('delFolder', d)
+    },
+    sendSubFolder: function (d) {
+      socket.emit('sendSubFolder', d)
     }
   }
 })
 
-socket.on('initFolderList', function (d) {
-  debug(d)
+socket.on('init', function (d) {
   vm.$broadcast('initFolderList', d)
 }).on('folderList', function (j) {
-  // console
+  // 点击侧边栏
   if (j.errno === 0) {
+    vm.$broadcast('receiveFolder', {
+      folder: j.folder,
+      isNew: false
+    })
     vm.$broadcast('fileList', j.data)
   } else {
     alert('获取文件列表失败')
@@ -47,10 +44,20 @@ socket.on('initFolderList', function (d) {
   if (d.errno !== 0) {
     alert('不是一个目录')
   } else {
-    vm.$broadcast('receiveFolder', d.folder)
+    vm.$broadcast('receiveFolder', {
+      folder: d.folder,
+      isNew: true
+    })
+    vm.$broadcast('fileList', d.files)
   }
 }).on('deleteStatus', function (d) {
   if (d.errno !== 0) {
     alert('删除失败')
+  }
+}).on('subFolderStatus', function (d) {
+  if (d.errno !== 0) {
+    alert('不是个目录或者目录不存在')
+  } else {
+    vm.$broadcast('subFolderStatus', d)
   }
 })

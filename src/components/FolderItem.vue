@@ -4,7 +4,7 @@
             'active': ($index === activeIndex)
           }" @click="active($index, item)">
         <span>{{ item }}</span>
-        <i class="btn btn-danger btn-sm glyphicon glyphicon-trash" title="从列表中去除" data-toggle="tooltip" @click="remove($index, item, $event)"></i>
+        <i class="btn btn-danger btn-sm glyphicon glyphicon-trash" title="从列表中去除" data-toggle="tooltip" @click.stop="remove($index, item, $event)"></i>
     </a>
   </div>
 </template>
@@ -23,7 +23,6 @@ export default {
   methods: {
     remove: function (i, f, evt) {
       var folder = this.items.splice(i, 1)
-      evt.stopPropagation()
       this.$dispatch('delFolder', {
         folder: folder[0]
       })

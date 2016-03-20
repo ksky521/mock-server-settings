@@ -19,10 +19,10 @@
             <tabs>
               <tab header="文件列表">
                 <ul class="breadcrumb">
-                    <li><a href="javascript:" data-bind="text:path, click: goRoot"></a></li>
-                    <li><a href="javascript:" data-bind="text: name, click: onClick"></a></li>
+                    <li><a href="javascript:" @click="activeRoot(activeFolder)">{{activeFolder}}</a></li>
+                    <li v-for="f in subFolders"><a href="javascript:" @click="activeSubFolder(f)">{{f}}</a></li>
                 </ul>
-                <file-item></file-item>
+                <file-item :hosts=hosts :sub-folders=subFolders :port=port></file-item>
 
               </tab>
               <tab header="设置">
@@ -108,11 +108,14 @@
     data () {
       return {
         folders: [],
+        hosts: [],
+        port: '',
         activeFolder: '',
         activeFolderIndex: 0,
         newFolder: '',
         refreshDelay: 0,
-        compileLess: false
+        compileLess: false,
+        subFolders: []
       }
     },
     methods: {
@@ -124,19 +127,58 @@
           })
         }
       },
+      activeRoot: function (folder) {
+        this.subFolders.length = 0
+        this.$dispatch('sendSubFolder', {
+          curFolder: this.activeFolder,
+          newSubFolder: '',
+          subFolders: this.subFolders
+        })
+      },
+      activeSubFolder: function (subFolder) {
+        subFolder = String(subFolder).trim()
+        var index = this.subFolders.indexOf(subFolder)
+        this.subFolders.splice(index)
+        if (subFolder) {
+          this.$dispatch('sendSubFolder', {
+            curFolder: this.activeFolder,
+            newSubFolder: subFolder,
+            subFolders: this.subFolders
+          })
+        } else {
+          alert('错误的路径')
+        }
+      },
       addFolderArray: function (f) {
-        this.folders.unshift(f)
-        this.newFolder = ''
+        f && this.folders.unshift(f)
       }
     },
     events: {
-      receiveFolder: function (f) {
-        this.addFolderArray(f)
+      receiveFolder: function (j) {
+        j.isNew && this.addFolderArray(j.folder)
+        this.activeFolder = j.folder
+        this.subFolders.length = 0
+      },
+      subFolderStatus: function (d) {
+        this.$broadcast('fileList', d.files)
+        if (d.newSubFolder) {
+          this.subFolders.push(d.newSubFolder)
+        }
+      },
+      subFolderClick: function (d) {
+        this.$dispatch('sendSubFolder', {
+          curFolder: this.activeFolder,
+          newSubFolder: d,
+          subFolders: this.subFolders
+        })
       },
       initFolderList: function (d) {
         this.folders = d.folderList
         this.activeFolder = d.curFolder
         this.activeFolderIndex = this.folders.indexOf(d.curFolder)
+        this.$broadcast('fileList', d.files)
+        this.hosts = d.hosts
+        this.port = d.port
       }
     }
   }

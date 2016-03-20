@@ -5,7 +5,8 @@
       'muted': isMuted($index)
     }" v-for="item in items">
         <td class="file">
-            <a href="{{item.name}}" target="_blank" class="icon {{item.type}}">{{item.name}}</a>
+            <a v-if="item.type==='DIR'" href="javascript:;" @click="acitveSubFolder(item.name)" class="icon {{item.type}}">{{item.name}}</a>
+            <a v-else href="{{host()+item.name}}" target="_blank" class="icon {{item.type}}">{{item.name}}</a>
         </td>
 
         <td class="op">
@@ -28,12 +29,31 @@
 
 <script>
   export default {
+    props: {
+      hosts: {
+        type: Array,
+        default: []
+      },
+      port: {
+        default: '',
+        set: function (value) {
+          return String(value)
+        }
+      },
+      subFolders: Array
+    },
     data () {
       return {
-        items: []
+        items: [],
+        host: function () {
+          return 'http://' + this.hosts[0] + (this.port ? (':' + this.port) : '') + '/' + this.subFolders.join('/')
+        }
       }
     },
     methods: {
+      acitveSubFolder: function (f) {
+        this.$dispatch('subFolderClick', f)
+      },
       showQRCode: function (i) {},
       unmute: function (i) {
         this.items[i].isMuted = false
@@ -47,7 +67,6 @@
     },
     events: {
       fileList: function (d) {
-        console.log(d)
         this.items = d
       }
     }
