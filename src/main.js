@@ -28,6 +28,7 @@ var vm = new Vue({
 })
 
 socket.on('init', function (d) {
+  console.log(d)
   vm.$broadcast('initFolderList', d)
 }).on('folderList', function (j) {
   // 点击侧边栏

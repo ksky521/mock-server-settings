@@ -12,14 +12,14 @@
                   </span>
               </div>
 
-              <folder-item :items=folders :active-index=activeFolderIndex></folder-item>
+              <folder-item :items=folders active-index=curFolderIndex></folder-item>
           </div>
 
           <div class="project-box col-sm-7">
             <tabs>
               <tab header="文件列表">
                 <ul class="breadcrumb">
-                    <li><a href="javascript:" @click="activeRoot(activeFolder)">{{activeFolder}}</a></li>
+                    <li><a href="javascript:" @click="activeRoot(curFolder)">{{curFolder}}</a></li>
                     <li v-for="f in subFolders"><a href="javascript:" @click="activeSubFolder(f)">{{f}}</a></li>
                 </ul>
                 <file-item :hosts=hosts :sub-folders=subFolders :port=port></file-item>
@@ -110,8 +110,9 @@
         folders: [],
         hosts: [],
         port: '',
-        activeFolder: '',
-        activeFolderIndex: 0,
+        curFolder: '',
+        curFolderIndex: 0,
+        lastSubFolder: '',
         newFolder: '',
         refreshDelay: 0,
         compileLess: false,
@@ -128,20 +129,23 @@
         }
       },
       activeRoot: function (folder) {
-        this.subFolders.length = 0
+        this.subFolders = []
         this.$dispatch('sendSubFolder', {
-          curFolder: this.activeFolder,
+          curFolder: this.curFolder,
           newSubFolder: '',
           subFolders: this.subFolders
         })
       },
       activeSubFolder: function (subFolder) {
         subFolder = String(subFolder).trim()
+        if (subFolder === this.lastSubFolder) {
+          return
+        }
         var index = this.subFolders.indexOf(subFolder)
         this.subFolders.splice(index)
         if (subFolder) {
           this.$dispatch('sendSubFolder', {
-            curFolder: this.activeFolder,
+            curFolder: this.curFolder,
             newSubFolder: subFolder,
             subFolders: this.subFolders
           })
@@ -156,26 +160,29 @@
     events: {
       receiveFolder: function (j) {
         j.isNew && this.addFolderArray(j.folder)
-        this.activeFolder = j.folder
-        this.subFolders.length = 0
+        this.newFolder = ''
+        this.curFolder = j.folder
+        this.subFolders = []
       },
       subFolderStatus: function (d) {
         this.$broadcast('fileList', d.files)
         if (d.newSubFolder) {
+          this.lastSubFolder = d.newSubFolder
           this.subFolders.push(d.newSubFolder)
         }
       },
       subFolderClick: function (d) {
         this.$dispatch('sendSubFolder', {
-          curFolder: this.activeFolder,
+          curFolder: this.curFolder,
           newSubFolder: d,
           subFolders: this.subFolders
         })
       },
       initFolderList: function (d) {
         this.folders = d.folderList
-        this.activeFolder = d.curFolder
-        this.activeFolderIndex = this.folders.indexOf(d.curFolder)
+        this.curFolder = d.curFolder
+        this.curFolderIndex = this.folders.indexOf(d.curFolder)
+        this.$broadcast('setFolderItemIndex', this.curFolderIndex)
         this.$broadcast('fileList', d.files)
         this.hosts = d.hosts
         this.port = d.port

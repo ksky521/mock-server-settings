@@ -10,7 +10,10 @@ module.exports = {
     "browser": false
   },
   globals: {
-    'alert': true
+    'alert': true,
+    '$': true,
+    'jQuery': true,
+    'QRCode': true
   },
   // add your custom rules here
   'rules': {

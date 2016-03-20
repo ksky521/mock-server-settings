@@ -1,5 +1,5 @@
 <template>
-<modal title="二维码URL" :show.sync="qrcodeModal" effect="zoom" width="400">
+<modal title="二维码URL" :show.sync="modal" effect="zoom" width="400">
   <div slot="modal-body" class="modal-body">
       <div id="hosts">
         <div class="input-group">
@@ -8,7 +8,7 @@
         </div>
     </div>
     <div class="clearfix"></div>
-    <input id="qrurl-input" name="url" class="form-control" type="text" value="{{host+filePath}}">
+    <input id="qrurl-input" name="url" class="form-control" type="text" value="{{url}}">
     <div id="qrcode"></div>
   </div>
   <div slot="modal-footer">
@@ -20,9 +20,9 @@
 <script>
     import modal from 'vue-strap/src/modal'
     export default {
-        props: ['host', 'filePath'],
         data () {
             return {
+                modal: false,
                 host: 'http://127.0.0.1'
             }
         }

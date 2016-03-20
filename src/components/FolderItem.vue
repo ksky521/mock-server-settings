@@ -1,7 +1,7 @@
 <template>
   <div class="list-group" id="folders">
     <a href="javascript:" class="list-group-item" v-for="item in items" :class="{
-            'active': ($index === activeIndex)
+            'active': ($index === curIndex)
           }" @click="active($index, item)">
         <span>{{ item }}</span>
         <i class="btn btn-danger btn-sm glyphicon glyphicon-trash" title="从列表中去除" data-toggle="tooltip" @click.stop="remove($index, item, $event)"></i>
@@ -12,7 +12,7 @@
 export default {
   props: {
     items: Array,
-    activeIndex: {
+    curIndex: {
       type: Number,
       default: 0
     }
@@ -28,11 +28,15 @@ export default {
       })
     },
     active: function (i, f) {
-      this.activeIndex = i
-      var activeFolder = this.items[this.activeIndex]
+      this.curIndex = i
       this.$dispatch('changeFolder', {
-        folder: activeFolder
+        folder: this.items[this.curIndex]
       })
+    }
+  },
+  events: {
+    setFolderItemIndex: function (i) {
+      this.curIndex = i
     }
   }
 }
