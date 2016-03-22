@@ -92,7 +92,6 @@
   </div>
 </template>
 
-
 <script>
   import folderItem from './components/FolderItem'
   import fileItem from './components/FileItem'
@@ -117,6 +116,11 @@
         refreshDelay: 0,
         compileLess: false,
         subFolders: []
+      }
+    },
+    watch: {
+      refreshDelay: function (v) {
+        this.$dispatch('setIntervalTime', v)
       }
     },
     methods: {

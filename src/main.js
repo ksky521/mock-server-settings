@@ -23,6 +23,16 @@ var vm = new Vue({
     },
     sendSubFolder: function (d) {
       socket.emit('sendSubFolder', d)
+    },
+    setIntervalTime: function (t) {
+      t = parseInt(t, 10)
+      socket.emit('watchTimeInterval', {timeout: t})
+    },
+    fileAddWatch: function (t) {
+      socket.emit('addWatch', {file: t})
+    },
+    fileUnwatch: function (t) {
+      socket.emit('unwatch', {file: t})
     }
   }
 })

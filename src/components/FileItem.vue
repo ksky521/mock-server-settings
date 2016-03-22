@@ -105,15 +105,16 @@
         this.curUrl = i
         this.qrcode.makeCode(i)
         this.curHost = this.getHosts()[0]
-        console.log(this.curHost)
         // console.log(this.curHost)
         $('#qrcode-modal').modal()
       },
       unmute: function (i) {
         this.items[i].isMuted = false
+        this.$dispatch('fileAddWatch', this.items[i].name)
       },
       mute: function (i) {
         this.items[i].isMuted = true
+        this.$dispatch('fileUnwatch', this.items[i].name)
       },
       isMuted: function (i) {
         return !!this.items[i].isMuted
