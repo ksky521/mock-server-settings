@@ -10,11 +10,11 @@
   </thead>
   <tbody>
     <tr v-for="item in items">
-        <td>{{item.path}}</td>
-        <td>{{item.url}}</td>
-        <td class="op">
-            <a href="#" class="glyphicon glyphicon-remove-circle" @click.stop="remove($index)">删除</a>
-        </td>
+      <td>{{item.path}}</td>
+      <td>{{item.url}}</td>
+      <td class="op">
+          <a href="#" data-toggle="tooltip" title="删除" class="glyphicon glyphicon-remove-circle" @click.stop="remove($index)"></a>
+      </td>
     </tr>
   </tbody>
 </table>
@@ -101,5 +101,9 @@ export default {
 <style>
 .op a{
   color: #D9534F;
+  text-decoration: none;
+}
+tbody tr:hover .op a{
+  display: inline-block;
 }
 </style>
