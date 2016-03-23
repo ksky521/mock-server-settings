@@ -15,6 +15,8 @@ module.exports = merge(baseConfig, {
   },
   devtool: SOURCE_MAP ? '#source-map' : false,
   output: {
+    publicPath: 'static/',
+
     // naming output files with hashes for better caching.
     // dist/index.html will be auto-generated with correct URLs.
     filename: '[name].js',
