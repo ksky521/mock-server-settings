@@ -23,66 +23,59 @@
                     <li v-for="f in subFolders"><a href="javascript:" @click="activeSubFolder(f)">{{f}}</a></li>
                 </ul>
                 <file-item :hosts=hosts :sub-folders=subFolders :port=port></file-item>
+              </tab>
+              <tab header="反向代理">
 
               </tab>
               <tab header="设置">
-                <tabs nav-style="pills">
-                  <tab header="项目设置">
-                    <p>如果您的网站是<b>纯静态项目</b>，那么无需任何设置，只要点击文件列表中的网页就能直接使用</p>
-                    <hr>
-                    <p>
-                        如果您的项目使用到了<b>服务器技术</b>（如php），请设置该服务器的域名和端口：
-                        <div class="target-host-setter input-group">
-                            <input class="form-control" type="text" id="target-host-input"
-                                   placeholder="somedomain.com:8080"
-                                   data-bind="attr:{value:targetHost}">
-                            <div class="input-group-btn">
-                                <button class="btn btn-success" type="submit">保存</button>
-                                <button class="btn btn-default" data-bind="click: clearTargetHost">清除</button>
-                            </div>
-                        </div>
-
-                        <p class="text-muted">
-                            设定完成之后，访问F5所在域名就相当于访问映射的域名和端口（并加上自动刷新功能）
-                        </p>
+                <ul class="nav nav-pills" role="tablist">
+                  <li role="presentation" class="active"><a href="#autoCompile" aria-controls="home" role="tab" data-toggle="tab">自动编译</a></li>
+                  <li role="presentation"><a href="#refreshSet" aria-controls="profile" role="tab" data-toggle="tab">刷新设置</a></li>
+                </ul>
+                 <div class="tab-content">
+                  <div role="tabpanel" class="tab-pane active" id="autoCompile">
+                    <legend>Mockjs自动编译</legend>
+                    <div class="checkbox">
+                      <label>
+                          <input type="checkbox" v-model="compileMock"> 遇见mock扩展名文件自动编译
+                      </label>
+                      <p :class="{
+                      'text-success': compileMock,
+                      'text-muted': !compileMock
+                      }">
+                          <i class="glyphicon glyphicon-ok"></i>
+                          变更后的.mock文件将自动编译为.json文件输出
+                      </p>
+                    </div>
+                    <legend>ms自动处理</legend>
+                    <div class="checkbox">
+                      <label>
+                          <input type="checkbox" v-model="compileMs"> 遇见同名ms扩展名文件自动加载执行
+                      </label>
+                      <p :class="{
+                      'text-success': compileMs,
+                      'text-muted': !compileMs
+                      }">
+                          <i class="glyphicon glyphicon-ok"></i>
+                          变更后的.ms文件将自动加载处理同名json/mock数据
+                      </p>
+                    </div>
+                  </div>
+                  <div role="tabpanel" class="tab-pane" id="refreshSet">
+                    <legend>延迟刷新</legend>
+                    <div class="input-group" id="w150">
+                        <span class="input-group-addon">等待</span>
+                        <input class="form-control" type="text" v-model="refreshDelay" number>
+                        <span class="input-group-addon">秒</span>
+                    </div>
+                    <p :class="{
+                        'text-success': refreshDelay,
+                        'text-muted': !refreshDelay
+                        }">
+                      <i class="glyphicon glyphicon-ok"></i>检测到文件变更以后，会等待一段时间后，再更新样式和内容
                     </p>
-                    <hr>
-                    <p>
-                        如果不方便映射，也可以简单粗暴地在网页的&lt;/body&gt;之前插入如下代码来实现自动刷新:
-                        <pre>&lt;script src="http://<span data-bind="text:$root.host"></span>/_/js/reloader.js"&gt;&lt;/script&gt;</pre>
-                        <span class="text-muted">如果不是本机访问，请修改上述地址的host部分</span>
-                    </p>
-                  </tab>
-                  <tab header="自动编译">
-                    <legend>Less</legend>
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" v-model="compileLess"> 开启自动编译
-                            </label>
-                            <p :class="{
-                            'text-success': compileLess,
-                            'text-muted': !compileLess
-                            }">
-                                <i class="glyphicon glyphicon-ok"></i>
-                                变更后的.less文件将自动编译为.css文件（同目录）
-                            </p>
-                        </div>
-                  </tab>
-                  <tab header="刷新设置">
-                    <legend><b>延迟刷新</b></legend>
-                        <div class="input-group" id="w150">
-                            <span class="input-group-addon">等待</span>
-                            <input class="form-control" type="text" v-model="refreshDelay" number>
-                            <span class="input-group-addon">秒</span>
-                        </div>
-                        <p :class="{
-                            'text-success': refreshDelay,
-                            'text-muted': !refreshDelay
-                            }">
-                          <i class="glyphicon glyphicon-ok"></i>检测到文件变更以后，会等待一段时间后，再更新样式和内容
-                        </p>
-                  </tab>
-                </tabs>
+                  </div>
+                </div>
 
               </tab>
             </tabs>
@@ -114,13 +107,20 @@
         lastSubFolder: '',
         newFolder: '',
         refreshDelay: 0,
-        compileLess: false,
+        compileMock: true,
+        compileMs: true,
         subFolders: []
       }
     },
     watch: {
       refreshDelay: function (v) {
         this.$dispatch('setIntervalTime', v)
+      },
+      compileMock: function (v, ov) {
+        this.$dispatch('complie:mock', v)
+      },
+      compileMs: function (v, ov) {
+        this.$dispatch('complie:ms', v)
       }
     },
     methods: {
@@ -195,6 +195,9 @@
   }
 </script>
 <style lang="scss">
+  .nav-pills~.tab-content{
+    padding-top: 20px;
+  }
   .mb20{
     margin-bottom: 20px;
   }

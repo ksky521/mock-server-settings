@@ -11,14 +11,11 @@
 
         <td class="op">
             <div class="op-group">
-                <a href="javascript:" class="qrcode glyphicon glyphicon-qrcode"
-                   data-toggle="tooltip" title="URL+二维码" @click="showQRCode(item.name)">
+                <a href="javascript:" class="qrcode glyphicon glyphicon-qrcode" data-toggle="tooltip" title="URL+二维码" @click="showQRCode(item.name)">
                 </a>
-                <a href="javascript:" class="mute glyphicon glyphicon-ban-circle"
-                   data-toggle="tooltip" title="不监听更新" @click="mute($index, item)" :show="isMuted($index)">
+                <a href="javascript:" class="mute glyphicon glyphicon-ban-circle" data-toggle="tooltip" title="不监听更新" @click="mute($index, item)" v-show="!isMuted($index)">
                 </a>
-                <a href="javascript:" class="unmute glyphicon glyphicon-ok-circle"
-                   data-toggle="tooltip" title="监听更新" @click="unmute($index, item)" :show="!isMuted($index)">
+                <a href="javascript:" class="unmute glyphicon glyphicon-ok-circle" data-toggle="tooltip" title="监听更新" @click="unmute($index, item)" v-show="isMuted($index)">
                 </a>
             </div>
         </td>
@@ -35,9 +32,9 @@
             </div>
 
             <div class="modal-body">
-                <div id="hosts">
-                    <div class="input-group">
-                        <h4>域名</h4>
+                <div id="hosts" class="form-inline">
+                    <div class="form-group">
+                        <label>域名</label>
                         <select v-model="curHost" class="form-control">
                           <option v-for="host in getHosts()">{{host}}</option>
                         </select>
@@ -45,7 +42,7 @@
                 </div>
                 <div class="clearfix"></div>
 
-                <input id="qrurl-input" class="form-control" type="text" value="{{curHost}}">
+                <input id="qrurl-input" class="form-control" type="text" value="{{qrUrl}}">
                 <div id="qrcode"></div>
             </div>
 
@@ -76,8 +73,10 @@
     data () {
       return {
         items: [],
-        curUrl: '',
+        qrUrl: '',
+        qrPath: '',
         qrcode: null,
+        curHost: '',
         host: function () {
           var host = 'http://' + this.hosts[0] + (this.port ? (':' + this.port) : '') + '/' + this.subFolders.join('/') + '/'
           return host.replace(/\/\/$/, '/')
@@ -91,6 +90,12 @@
         text: ''
       })
     },
+    watch: {
+      curHost: function (v, ov) {
+        this.qrUrl = v + this.qrPath
+        this.qrcode.makeCode(this.qrUrl)
+      }
+    },
     methods: {
       getHosts: function () {
         return this.hosts.map(function (v) {
@@ -102,19 +107,23 @@
         this.$dispatch('subFolderClick', f)
       },
       showQRCode: function (i) {
-        this.curUrl = i
-        this.qrcode.makeCode(i)
+        this.qrPath = this.subFolders.join('/') + i
         this.curHost = this.getHosts()[0]
-        // console.log(this.curHost)
         $('#qrcode-modal').modal()
       },
       unmute: function (i) {
         this.items[i].isMuted = false
-        this.$dispatch('fileAddWatch', this.items[i].name)
+        this.$dispatch('fileAddWatch', {
+          file: this.items[i].name,
+          subFolders: this.subFolders
+        })
       },
       mute: function (i) {
         this.items[i].isMuted = true
-        this.$dispatch('fileUnwatch', this.items[i].name)
+        this.$dispatch('fileUnwatch', {
+          file: this.items[i].name,
+          subFolders: this.subFolders
+        })
       },
       isMuted: function (i) {
         return !!this.items[i].isMuted
@@ -193,7 +202,6 @@
     }
     a.unmute{
       color: #5CB85C;
-      display: none;
     }
   }
   #qrcode-modal{

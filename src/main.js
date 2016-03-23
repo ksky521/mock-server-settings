@@ -12,6 +12,15 @@ var vm = new Vue({
     App
   },
   events: {
+    'complie:mock': function (d) {
+      socket.emit('complie:mock', d)
+    },
+    'complie:ms': function (d) {
+      socket.emit('complie:ms', d)
+    },
+    stopRefresh: function (d) {
+      socket.emit('stopWatch', d)
+    },
     changeFolder: function (d) {
       socket.emit('changeFolder', d)
     },
@@ -29,10 +38,10 @@ var vm = new Vue({
       socket.emit('watchTimeInterval', {timeout: t})
     },
     fileAddWatch: function (t) {
-      socket.emit('addWatch', {file: t})
+      socket.emit('addWatch', t)
     },
     fileUnwatch: function (t) {
-      socket.emit('unwatch', {file: t})
+      socket.emit('unwatch', t)
     }
   }
 })
