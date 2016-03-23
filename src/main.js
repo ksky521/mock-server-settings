@@ -3,7 +3,7 @@ import App from './App'
 Vue.config.debug = true
 /* eslint-disable no-new */
 
-var ioUrl = 'http://' + window.location.hostname + ':8800'
+var ioUrl = 'http://' + window.location.host
 var socket = window.io(ioUrl)
 var vm = new Vue({
   el: 'body',
