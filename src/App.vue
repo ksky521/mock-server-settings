@@ -189,6 +189,9 @@
         this.folders = d.folderList
         this.curFolder = d.curFolder
         this.revProxies = d.revProxy
+        this.subFolders = d.subFolders
+        this.compileMock = d.compileMock
+        this.compileMs = d.compileMs
         this.curFolderIndex = this.folders.indexOf(d.curFolder)
         this.$broadcast('setFolderItemIndex', this.curFolderIndex)
         this.$broadcast('fileList', d.files)
