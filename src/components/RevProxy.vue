@@ -13,7 +13,7 @@
         <td>{{item.path}}</td>
         <td>{{item.url}}</td>
         <td class="op">
-            <a href="#" @click.stop="remove($index)">删除</a>
+            <a href="#" class="glyphicon glyphicon-remove-circle" @click.stop="remove($index)">删除</a>
         </td>
     </tr>
   </tbody>
@@ -98,3 +98,8 @@ export default {
   }
 }
 </script>
+<style>
+.op a{
+  color: #D9534F;
+}
+</style>
