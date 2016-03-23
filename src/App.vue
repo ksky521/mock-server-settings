@@ -25,7 +25,7 @@
                 <file-item :hosts=hosts :sub-folders=subFolders :port=port></file-item>
               </tab>
               <tab header="反向代理">
-
+                <rev-proxy :items=revProxies></rev-proxy>
               </tab>
               <tab header="设置">
                 <ul class="nav nav-pills" role="tablist">
@@ -88,6 +88,7 @@
 <script>
   import folderItem from './components/FolderItem'
   import fileItem from './components/FileItem'
+  import revProxy from './components/RevProxy'
   import tab from 'vue-strap/src/Tab'
   import tabs from 'vue-strap/src/Tabset'
   export default {
@@ -95,7 +96,8 @@
       folderItem,
       fileItem,
       tabs,
-      tab
+      tab,
+      revProxy
     },
     data () {
       return {
@@ -109,7 +111,8 @@
         refreshDelay: 0,
         compileMock: true,
         compileMs: true,
-        subFolders: []
+        subFolders: [],
+        revProxies: []
       }
     },
     watch: {
@@ -185,6 +188,7 @@
       initFolderList: function (d) {
         this.folders = d.folderList
         this.curFolder = d.curFolder
+        this.revProxies = d.revProxy
         this.curFolderIndex = this.folders.indexOf(d.curFolder)
         this.$broadcast('setFolderItemIndex', this.curFolderIndex)
         this.$broadcast('fileList', d.files)

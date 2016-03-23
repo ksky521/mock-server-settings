@@ -22,7 +22,7 @@
     </tr>
   </tbody>
 </table>
-<div id="qrcode-modal" class="modal fade">
+<div id="qrcodeModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
 
@@ -109,7 +109,7 @@
       showQRCode: function (i) {
         this.qrPath = this.subFolders.join('/') + i
         this.curHost = this.getHosts()[0]
-        $('#qrcode-modal').modal()
+        $('#qrcodeModal').modal()
       },
       unmute: function (i) {
         this.items[i].isMuted = false
@@ -204,7 +204,7 @@
       color: #5CB85C;
     }
   }
-  #qrcode-modal{
+  #qrcodeModal{
     .input-group {
       width: 400px;
     }

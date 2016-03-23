@@ -18,8 +18,11 @@ var vm = new Vue({
     'complie:ms': function (d) {
       socket.emit('complie:ms', d)
     },
-    stopRefresh: function (d) {
-      socket.emit('stopWatch', d)
+    addRevProxy: function (d) {
+      socket.emit('addRevProxy', d)
+    },
+    delRevProxy: function (d) {
+      socket.emit('delRevProxy', d)
     },
     changeFolder: function (d) {
       socket.emit('changeFolder', d)
@@ -80,4 +83,12 @@ socket.on('init', function (d) {
   } else {
     vm.$broadcast('subFolderStatus', d)
   }
+}).on('addRevProxyCallback', function (d) {
+  if (d.errno !== 0) {
+    alert('设置反向代理失败，请检查正则')
+  } else {
+    vm.$broadcast('addRevProxyCallback', d)
+  }
+}).on('delRevProxyCallback', function (d) {
+  vm.$broadcast('delRevProxyCallback', d)
 })
