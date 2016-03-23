@@ -13,7 +13,7 @@
       <td>{{item.path}}</td>
       <td>{{item.url}}</td>
       <td class="op">
-          <a href="#" data-toggle="tooltip" title="删除" class="glyphicon glyphicon-remove-circle" @click.stop="remove($index)"></a>
+          <a href="#" data-toggle="tooltip" title="删除" class="rev glyphicon glyphicon-remove-circle" @click.stop="remove($index)"></a>
       </td>
     </tr>
   </tbody>
@@ -99,11 +99,11 @@ export default {
 }
 </script>
 <style>
-.op a{
+.op a.rev{
   color: #D9534F;
   text-decoration: none;
 }
-tbody tr:hover .op a{
+tbody tr:hover .op a.rev{
   display: inline-block;
 }
 </style>
